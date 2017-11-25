@@ -18,22 +18,22 @@ def preprocess(x):
 
 if __name__ == '__main__':
     groups = 3
-    batch_size = 128
+    batch_size = 64
     inital_epoch = 0
-    ds = '/mnt/daten/Development/ILSVRC2012_256'
+    ds = '/home/ljg/Desktop'
 
     model = ShuffleNet(groups=groups, pooling='avg')
-    plot_model(model, 'model.png', show_shapes=True)
+    #plot_model(model, 'model.png', show_shapes=True)
     # model.load_weights('%s.hdf5' % model.name, by_name=True)
     csv_logger = CSVLogger('%s.log' % model.name, append=(inital_epoch is not 0))
-    checkpoint = ModelCheckpoint(filepath='%s.hdf5' % model.name, verbose=1,
+    checkpoint = ModelCheckpoint(filepath='5000_{val_acc:.4f}.hdf5', verbose=1,
                                  save_best_only=True, monitor='val_acc', mode='max')
 
     learn_rates = [0.05, 0.01, 0.005, 0.001, 0.0005]
     lr_scheduler = LearningRateScheduler(lambda epoch: learn_rates[epoch // 30])
 
     train_datagen = ImageDataGenerator(preprocessing_function=preprocess,
-                                       zoom_range=0.25,
+                                       zoom_range=0.1,
                                        width_shift_range=0.05,
                                        height_shift_range=0.05,
                                        horizontal_flip=True)
@@ -41,27 +41,27 @@ if __name__ == '__main__':
     test_datagen = ImageDataGenerator(preprocessing_function=preprocess)
 
     train_generator = train_datagen.flow_from_directory(
-            '%s/train/' % ds,
+            '%s/train5000/' % ds,
             target_size=(224, 224),
             batch_size=batch_size)
 
     test_generator = test_datagen.flow_from_directory(
-            '%s/val/' % ds,
+            '%s/val5000/' % ds,
             target_size=(224, 224),
             batch_size=batch_size)
 
     model.compile(
-              optimizer=keras.optimizers.SGD(lr=.05, decay=5e-4, momentum=0.9),
+              optimizer= keras.optimizers.SGD(lr=.1, decay=5e-4, momentum=0.9),
               metrics=['accuracy'],
               loss='categorical_crossentropy')
-
+    model.summary()
     model.fit_generator(
             train_generator,
             steps_per_epoch=train_generator.samples // batch_size,
-            epochs=100,
-            workers=7,
+            epochs=400,
+            workers=8,
             initial_epoch=inital_epoch,
-            use_multiprocessing=False,
+            use_multiprocessing=True,
             validation_data=test_generator,
             validation_steps=test_generator.samples // batch_size,
             callbacks=[csv_logger, checkpoint, lr_scheduler])

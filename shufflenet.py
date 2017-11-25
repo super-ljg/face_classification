@@ -10,7 +10,7 @@ import numpy as np
 
 def ShuffleNet(include_top=True, input_tensor=None, scale_factor=1.0, pooling='max',
                input_shape=(224,224,3), groups=1, load_model=None, num_shuffle_units=[3, 7, 3],
-               bottleneck_ratio=0.25, classes=1000):
+               bottleneck_ratio=0.25, classes=5000):
     """
     ShuffleNet implementation for Keras 2
 
