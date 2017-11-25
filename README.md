@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Keras ShuffleNet [![Build Status](https://travis-ci.org/scheckmedia/keras-shufflenet.svg?branch=master)](https://travis-ci.org/scheckmedia/keras-shufflenet)
 ShuffleNet Implementation using Keras Functional Framework 2.0
 
@@ -22,3 +23,7 @@ Currently there is no pretrained model but a training for groups=3 is in progres
 MIT License 
 
 Note: If you find this project useful, please include reference link in your work.
+=======
+# face_classification
+face classification 
+>>>>>>> 31cdcfca24ffdc6f3acd8ca12bd0f1963d03117e
